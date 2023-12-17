@@ -1,12 +1,13 @@
-from driver.taobao import Taobao
+from driver.alipay import Alipay
 from utils.appium_utils import retry_n
 
 
+# @retry_n(5)
 def main():
     seed = {
         'keyword': 'Python 书'
     }
-    spider = Taobao()
+    spider = Alipay()
     while True:
         spider.execute(seed=seed)
 
