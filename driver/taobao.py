@@ -23,6 +23,7 @@ class Taobao(AppiumDemo):
         self.button2desc.update(
             {'去完成': [
                 '浏览15',
+                '浏览最高',
                 # '逛精选好货',
                 # '逛精选好物',
             ]})
@@ -52,7 +53,7 @@ class Taobao(AppiumDemo):
 
     def browse_sou_yi_sou(self):
         to_complet_buttons = self.find_element('button', '去完成')
-        element_browse_good = self.find_element('view', f'搜一搜你喜欢的商品')[0]
+        element_browse_good = self.find_element('view', f'搜一搜')
         self.browse(to_complet_buttons, element_browse_good, True)
 
     def click_gather_fertilizer(self):

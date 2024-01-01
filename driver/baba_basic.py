@@ -40,7 +40,7 @@ class AppiumDemo(object):
         获取单个元素, 显式等待
         :param driver: 驱动对象
         :param by_type: 查找元素的操作
-        :param value: 查找元素的方法
+        :param value: 查找元素的方法vsd
         :return:
         """
         driver = driver or self.driver
@@ -98,15 +98,14 @@ class AppiumDemo(object):
             while flag:
                 flag = 0
                 for func in func_list:
-                    while 1:
                         try:
                             func()
                             flag += 1
                         except:
-                            break
-            if flag == 0:
-                self.swipe_up(1000)
-                self.try_time -= 1
+                            continue
+            # if flag == 0:
+            #     self.swipe_up(1000)
+            #     self.try_time -= 1
 
     def swipe_and_back(self):
         self.swipe_up()  # 向上滑动
@@ -124,25 +123,25 @@ class AppiumDemo(object):
 
     def browse(self, finish_buttons, target_descs, if_search=False):
         for desc in target_descs:
-            browse_good_bound = strBounds2list(target_descs.get_attribute('bounds'))
+            browse_good_bound = strBounds2list(desc.get_attribute('bounds'))
             for button in finish_buttons:
                 bounds = strBounds2list(button.get_attribute('bounds'))
                 if abs(bounds[-1] - browse_good_bound[-1]) > 80 or \
-                        (bounds[-1] > 2000 and self.try_time <= 0):
+                        (bounds[-1] > 2000 and self.try_time > 0):
                     continue
                 button.click()
+                search_flag = False
                 if if_search:
                     try:
+                        search_flag = True
                         self.find_element('button', '搜索')
                         self.click_coor(x=546, y=632)
                     except:
-                        self.driver.back()
+                        search_flag = False
                 self.swipe_and_back()
-                if if_search:
+                if search_flag:
                     time.sleep(1)
                     self.driver.back()
-                return
-        raise ModuleNotFoundError
 
     def browse_guan_hao_huo(self, item_desc, to_complete_text='去完成'):
         to_complet_buttons = self.find_element('button', f'{to_complete_text}')
