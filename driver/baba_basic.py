@@ -108,7 +108,7 @@ class AppiumDemo(object):
             #     self.try_time -= 1
 
     def swipe_and_back(self):
-        self.swipe_up()  # 向上滑动
+        self.swipe_up()  # 向上滑动e
         self.driver.back()
 
     def click_gather_fertilizer(self):

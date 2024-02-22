@@ -32,7 +32,7 @@ class Alipay(AppiumDemo):
         self.button2desc.update(
             {
                 '去逛逛': [
-                    '逛优选好物领1000肥料',
+                    '浏览15',
                 ]
             }
         )
