@@ -5,9 +5,9 @@ Tired of manually collecting fertilizer? Try this Taobao/Alipay automatic fertil
 ![img.png](farm_home_page.png)~~
 ~~
 ## Installation
-Python version 3.8 are recommended.
+Python version 3.8 is recommended.
 ### Install the dependencies
-Please install the dependencies from pre-requirements.txt and requirements.txt
+Please install the dependencies from requirements.txt
 ```
 pip install -r requirements.txt
 ```
