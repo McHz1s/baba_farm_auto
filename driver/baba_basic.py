@@ -1,23 +1,18 @@
 import os
 import time
 from collections import defaultdict
+from functools import partial
 
 from appium import webdriver
 from appium.webdriver.common import mobileby
 from appium.webdriver.common.mobileby import MobileBy
-from appium.webdriver.common.touch_action import TouchAction
 from appium.webdriver.webdriver import WebDriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
-from functools import wraps, partial
-
-import subprocess
-import re
-
-from utils.appium_utils import click_coor, get_size, swipe_up, to_desktop, get_into_app, \
-    find_element, build_desired_capabilities, strBounds2list
+from utils.appium_utils import click_coor, get_size, swipe_up, to_desktop, find_element, build_desired_capabilities, \
+    strBounds2list
 
 desired_capabilities = build_desired_capabilities()
 print(desired_capabilities)
@@ -27,7 +22,7 @@ print(desired_capabilities)
 #     def re_func(*args, **kwargs):
 
 
-class AppiumDemo(object):
+class BabaFarmBasic(object):
     def __init__(self):
         self.button2desc = defaultdict(list)
         self.driver = webdriver.Remote(command_executor=desired_capabilities['command_executor'],
@@ -78,19 +73,20 @@ class AppiumDemo(object):
             func_list.extend(cur_func_list)
         return func_list
 
-    def execute(self, seed):
+    def auto_gather(self):
+        while 1:
+            time.sleep(2)
+            self.click_and_gather()
+            time.sleep(1)
+            self.driver.back()
+            time.sleep(1)
+            self.get_into_baba_farm()
+            time.sleep(1)
+
+    def auto_browse(self):
         self.to_desktop()
         self.get_into_app()
         self.get_into_baba_farm()
-        if os.environ.get('GATHER', '0') == '1':
-            while 1:
-                time.sleep(2)
-                self.click_and_gather()
-                time.sleep(1)
-                self.driver.back()
-                time.sleep(1)
-                self.get_into_baba_farm()
-                time.sleep(1)
         self.click_gather_fertilizer()
         func_list = self.browse_func_init()
         while self.try_time >= 0:
@@ -98,27 +94,36 @@ class AppiumDemo(object):
             while flag:
                 flag = 0
                 for func in func_list:
-                        try:
-                            func()
-                            flag += 1
-                        except:
-                            continue
-            # if flag == 0:
-            #     self.swipe_up(1000)
-            #     self.try_time -= 1
+                    try:
+                        func()
+                        flag += 1
+                    except:
+                        continue
+
+    def execute(self, seed):
+        if os.environ.get('GATHER', '0') == '1':
+            self.auto_gather()
+        elif os.environ.get('USER_NAME', None) is not None:
+            self.auto_assist_all_users()
+        else:
+            self.auto_browse()
 
     def swipe_and_back(self):
-        self.swipe_up()  # 向上滑动e
+        self.swipe_up()  # 向上滑动
         self.driver.back()
 
     def click_gather_fertilizer(self):
-        raise  NotImplementedError # 设置等待时间为10秒
+        raise NotImplementedError  # 设置等待时间为10秒
 
-    def find_element(self, type_str, text):
-        mapping = {'view': 'view.View', 'button': 'widget.Button'}
-        elem = find_element(self.driver, By.XPATH,
-                            f"//android.{mapping[type_str]}[contains(@text, '{text}')]",
-                            wait_time=10)
+    def find_element(self, xpath_type, text, attribute_type='text'):
+        xpath_map = {'view': 'view.View', 'button': 'widget.Button'}
+        EC_mapping = {'frame'}
+        if xpath_type in xpath_map:
+            elem = find_element(self.driver, By.XPATH,
+                                f"//android.{xpath_map[xpath_type]}[contains(@{attribute_type}, '{text}')]",
+                                wait_time=10)
+        else:
+            elem = find_element(self.driver, MobileBy.ACCESSIBILITY_ID, text)
         return elem
 
     def browse(self, finish_buttons, target_descs, if_search=False):
@@ -154,11 +159,11 @@ class AppiumDemo(object):
         self.browse(to_complet_buttons, element_browse_good, True)
 
     def click_and_gather(self):
-            self.click_coor(x=549, y=1868)
-            # time.sleep(1)
-            # self.click_coor(x=554, y=1463)
-            # time.sleep(1)
-            # self.click_coor(525, 1463)
-            # time.sleep(1)
-            # self.click_coor(551, 1551)
-            time.sleep(1)
+        self.click_coor(x=549, y=1868)
+        # time.sleep(1)
+        # self.click_coor(x=554, y=1463)
+        # time.sleep(1)
+        # self.click_coor(525, 1463)
+        # time.sleep(1)
+        # self.click_coor(551, 1551)
+        time.sleep(1)
