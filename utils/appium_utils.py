@@ -94,6 +94,11 @@ def to_desktop(driver, back_time):
             time.sleep(0.5)
 
 
+def click_elem_by_coor(elem, driver):
+    loc = elem.location
+    click_coor(driver, **loc)
+
+
 def get_into_app(driver: WebDriver, app_pkg: str, app_page: str):
     try:
         driver.start_activity(f'{app_pkg}', f"{app_page}")

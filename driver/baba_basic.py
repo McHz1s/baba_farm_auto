@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from utils.appium_utils import click_coor, get_size, swipe_up, to_desktop, find_element, build_desired_capabilities, \
-    strBounds2list
+    strBounds2list, click_elem_by_coor
 
 desired_capabilities = build_desired_capabilities()
 print(desired_capabilities)
@@ -115,9 +115,16 @@ class BabaFarmBasic(object):
     def click_gather_fertilizer(self):
         raise NotImplementedError  # 设置等待时间为10秒
 
-    def find_element(self, xpath_type, text, attribute_type='text'):
+    def find_element(self, xpath_type, text, attribute_type='text', do_click=False):
         xpath_map = {'view': 'view.View', 'button': 'widget.Button'}
         EC_mapping = {'frame'}
+        if xpath_type in ['TextView']:
+            elem = find_element(self.driver, By.XPATH,
+                                f"//android.widget.TextView[@text='{text}']")
+            if do_click:
+                click_elem_by_coor(elem[0], self.driver)
+                Warning("has multiple elem but set auto click, click the first")
+            return elem
         if xpath_type in xpath_map:
             elem = find_element(self.driver, By.XPATH,
                                 f"//android.{xpath_map[xpath_type]}[contains(@{attribute_type}, '{text}')]",
@@ -167,3 +174,9 @@ class BabaFarmBasic(object):
         # time.sleep(1)
         # self.click_coor(551, 1551)
         time.sleep(1)
+
+    def auto_assist_all_users(self):
+        for user_name in os.environ.get('USER_NAME').split():
+            self.to_desktop()
+            self.get_into_app()
+            self.auto_assist_user(user_name)

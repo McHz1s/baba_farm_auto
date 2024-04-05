@@ -1,3 +1,4 @@
+import os
 import time
 from functools import partial
 
@@ -91,10 +92,4 @@ class Taobao(BabaFarmBasic):
             return
         self.swipe_click_into_assist_page()
         self.click_assist_right_now()
-
-    def auto_assist_all_users(self):
-        for user_name in os.environ.get('USER_NAME').split():
-            self.to_desktop()
-            self.get_into_app()
-            self.auto_assist_user(user_name)
 

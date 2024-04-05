@@ -1,8 +1,10 @@
+import os
+import time
 from functools import partial
 
 from driver.baba_basic import BabaFarmBasic
 from utils.appium_utils import get_into_app, \
-    build_desired_capabilities, find_element, strBounds2list
+    build_desired_capabilities, find_element, strBounds2list, click_elem_by_coor
 
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -24,10 +26,6 @@ class Alipay(BabaFarmBasic):
             {'去完成': [
                 '逛15',
                 '浏览15',
-                # '逛好物最高得2000肥料',
-                # '看精选商品得1500肥料',
-                # '逛织金助农好货领肥料',
-                # '逛助农好货得肥料'
             ]})
         self.button2desc.update(
             {
@@ -36,7 +34,6 @@ class Alipay(BabaFarmBasic):
                 ]
             }
         )
-        # self.button2desc.update({'去浏览': ['浏览金币小镇得肥料']})
 
     def get_into_baba_farm(self):
         elem = find_element(self.driver, By.XPATH,
@@ -54,23 +51,29 @@ class Alipay(BabaFarmBasic):
         self.click_coor(**loc)
 
     def click_msg(self):
-        msg_box = self.find_element('frame', f'消息')[0]
-        msg_box.click()
+        self.find_element('TextView', f'消息', do_click=True)
         time.sleep(1)
 
     def click_user_msg_box(self, user_name):
-        msg_box = self.find_element('view', user_name, 'content-desc')[0]
-        msg_box.click()
+        self.find_element('TextView', f'{user_name}', do_click=True)
         time.sleep(2)
 
     def swipe_click_into_assist_page(self):
-        assist_box = self.find_element('frame', '拜托帮我助力一下吧～你也可以领免费水果！')[0]
-        assist_box.click()
-        time.sleep(2)
+        assist_boxs = self.find_element('TextView', f'帮我助力，你也有奖励')
+        for box in assist_boxs:
+            click_elem_by_coor(box, self.driver)
+            time.sleep(5)
+            self.alipay_click_assist_right_now()
+            time.sleep(1)
+            self.driver.back()
+            time.sleep(1)
+
+    def alipay_click_assist_right_now(self):
+        assist_rn = self.find_element('button', '为Ta助力')[0]
+        assist_rn.click()
 
     def click_assist_right_now(self):
-        assist_rn = self.find_element('button', '立即助力')[0]
-        assist_rn.click()
+        pass
 
     def auto_assist_user(self, user_name):
         self.click_msg()

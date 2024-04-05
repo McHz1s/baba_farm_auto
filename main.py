@@ -4,11 +4,11 @@ from utils.appium_utils import retry_n
 
 def main():
     seed = {
-        'keyword': 'Python 书'
+        'keyword': 'Taobao'
     }
     spider = Taobao()
     while True:
-        spider.execute(seed=seed)
+        spider.execute(seed)
 
 
 if __name__ == '__main__':
