@@ -89,7 +89,42 @@ class Taobao(BabaFarmBasic):
         try:
             self.click_user_msg_box(user_name)
         except:
-            return
-        self.swipe_click_into_assist_page()
-        self.click_assist_right_now()
+            return False
+        try:
+            self.swipe_click_into_assist_page()
+            self.click_assist_right_now()
+            time.sleep(3)
+        except:
+            pass
+        return True
 
+    def auto_assist_all_users(self):
+        user_name_list = os.environ.get('USER_NAME').split()
+        for i, user_name in enumerate(user_name_list):
+            self.to_desktop()
+            self.get_into_app()
+            is_success = self.auto_assist_user(user_name)
+            if is_success:
+                valid_user_name = user_name
+        self.to_desktop()
+        self.get_into_app()
+        try:
+            self.auto_assist_user(valid_user_name)
+        except:
+            pass
+        time.sleep(3)
+        self.click_gather_fertilizer()
+        self.auto_browse()
+
+    def auto_browse(self):
+        func_list = self.browse_func_init()
+        while self.try_time >= 0:
+            flag = len(func_list)
+            while flag:
+                flag = 0
+                for func in func_list:
+                    try:
+                        func()
+                        flag += 1
+                    except:
+                        continue

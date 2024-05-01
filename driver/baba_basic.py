@@ -29,6 +29,7 @@ class BabaFarmBasic(object):
                                        desired_capabilities=desired_capabilities)
         self.by = mobileby.MobileBy()
         self.try_time = 1
+        valid_user_name = None
 
     def wait_find_element(self, by_type: str, value: str, driver: WebDriver = None):
         """
@@ -59,7 +60,10 @@ class BabaFarmBasic(object):
         return swipe_up(self.driver, swipe_time)
 
     def to_desktop(self, back_time=20):
-        to_desktop(self.driver, back_time)
+        for i in range(back_time):
+            self.back()
+            if i != back_time - 1:
+                time.sleep(0.1)
 
     def get_into_app(self):
         raise NotImplementedError
@@ -110,13 +114,13 @@ class BabaFarmBasic(object):
 
     def swipe_and_back(self):
         self.swipe_up()  # 向上滑动
-        self.driver.back()
+        self.back()
 
     def click_gather_fertilizer(self):
         raise NotImplementedError  # 设置等待时间为10秒
 
     def find_element(self, xpath_type, text, attribute_type='text', do_click=False):
-        xpath_map = {'view': 'view.View', 'button': 'widget.Button'}
+        xpath_map = {'view': 'view.View', 'button': 'widget.Button', 'edittext': 'widget.EditText'}
         EC_mapping = {'frame'}
         if xpath_type in ['TextView']:
             elem = find_element(self.driver, By.XPATH,
@@ -125,12 +129,18 @@ class BabaFarmBasic(object):
                 click_elem_by_coor(elem[0], self.driver)
                 Warning("has multiple elem but set auto click, click the first")
             return elem
-        if xpath_type in xpath_map:
+        if xpath_type in xpath_map or xpath_type.lower() in xpath_map:
+            prop = f"//android.{xpath_map[xpath_type.lower()]}"
+            if text is not None:
+                prop += f"[contains(@{attribute_type}, '{text}')]"
             elem = find_element(self.driver, By.XPATH,
-                                f"//android.{xpath_map[xpath_type]}[contains(@{attribute_type}, '{text}')]",
-                                wait_time=10)
+                                prop,
+                                wait_time=5)
         else:
             elem = find_element(self.driver, MobileBy.ACCESSIBILITY_ID, text)
+        if do_click:
+            click_elem_by_coor(elem[0], self.driver)
+            Warning("has multiple elem but set auto click, click the first")
         return elem
 
     def browse(self, finish_buttons, target_descs, if_search=False):
@@ -146,14 +156,17 @@ class BabaFarmBasic(object):
                 if if_search:
                     try:
                         search_flag = True
-                        self.find_element('button', '搜索')
-                        self.click_coor(x=546, y=632)
+                        search_button = self.find_element('button', '搜索', do_click=False)[0]
+                        edit_button = self.find_element('edittext', None)[0]
+                        edit_button.send_keys('dd')
+                        time.sleep(1)
+                        search_button.click()
                     except:
                         search_flag = False
                 self.swipe_and_back()
                 if search_flag:
                     time.sleep(1)
-                    self.driver.back()
+                    self.back()
 
     def browse_guan_hao_huo(self, item_desc, to_complete_text='去完成'):
         to_complet_buttons = self.find_element('button', f'{to_complete_text}')
@@ -180,3 +193,11 @@ class BabaFarmBasic(object):
             self.to_desktop()
             self.get_into_app()
             self.auto_assist_user(user_name)
+
+    def back(self):
+        try:
+            back_button = self.find_element('Button', '返回')[0]
+            back_button.click()
+        except:
+            self.driver.back()
+
