@@ -96,6 +96,10 @@ def to_desktop(driver, back_time):
 
 def click_elem_by_coor(elem, driver):
     loc = elem.location
+    loc = {
+        'x': loc['x'] + elem.size['width'] // 2,
+        'y': loc['y'] + elem.size['height'] // 2
+    }
     click_coor(driver, **loc)
 
 
