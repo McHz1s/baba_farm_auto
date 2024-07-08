@@ -119,7 +119,7 @@ class BabaFarmBasic(object):
     def click_gather_fertilizer(self):
         raise NotImplementedError  # 设置等待时间为10秒
 
-    def find_element(self, xpath_type, text, attribute_type='text', do_click=False):
+    def find_element(self, xpath_type, text, attribute_type='text', do_click=False, wait_time=0.1):
         xpath_map = {'view': 'view.View', 'button': 'widget.Button', 'edittext': 'widget.EditText'}
         EC_mapping = {'frame'}
         if xpath_type in ['TextView']:
@@ -135,7 +135,7 @@ class BabaFarmBasic(object):
                 prop += f"[contains(@{attribute_type}, '{text}')]"
             elem = find_element(self.driver, By.XPATH,
                                 prop,
-                                wait_time=5)
+                                wait_time=wait_time)
         else:
             elem = find_element(self.driver, MobileBy.ACCESSIBILITY_ID, text)
         if do_click:
@@ -155,18 +155,19 @@ class BabaFarmBasic(object):
                 search_flag = False
                 if if_search:
                     try:
-                        search_flag = True
                         search_button = self.find_element('button', '搜索', do_click=False)[0]
                         edit_button = self.find_element('edittext', None)[0]
                         edit_button.send_keys('dd')
                         time.sleep(1)
                         search_button.click()
                     except:
-                        search_flag = False
-                self.swipe_and_back()
-                if search_flag:
-                    time.sleep(1)
-                    self.back()
+                        pass
+                self.swipe_up()
+                try:
+                    self.find_element('button', '取消', do_click=True)
+                except:
+                    pass
+                self.back_until_elem_found('button', '去完成')
 
     def browse_guan_hao_huo(self, item_desc, to_complete_text='去完成'):
         to_complet_buttons = self.find_element('button', f'{to_complete_text}')
@@ -189,7 +190,7 @@ class BabaFarmBasic(object):
         time.sleep(1)
 
     def auto_assist_all_users(self):
-        for user_name in os.environ.get('USER_NAME').split():
+        for u_i, user_name in enumerate(os.environ.get('USER_NAME').split()):
             self.to_desktop()
             self.get_into_app()
             self.auto_assist_user(user_name)
@@ -201,3 +202,12 @@ class BabaFarmBasic(object):
         except:
             self.driver.back()
 
+    def back_until_elem_found(self, *find_elem_args, **find_elem_kwargs):
+        elem = None
+        while elem is None:
+            try:
+                elem = self.find_element(*find_elem_args, **find_elem_kwargs)
+            except:
+                elem = None
+            if elem is None:
+                self.back()
