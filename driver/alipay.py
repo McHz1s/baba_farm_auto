@@ -31,6 +31,7 @@ class Alipay(BabaFarmBasic):
             {
                 '去逛逛': [
                     '浏览15',
+                    '连续浏览'
                 ]
             }
         )
@@ -69,7 +70,7 @@ class Alipay(BabaFarmBasic):
             time.sleep(1)
 
     def alipay_click_assist_right_now(self):
-        assist_rn = self.find_element('button', '为Ta助力')[0]
+        assist_rn = self.find_element('button', '为Ta助力', wait_time=1)[0]
         assist_rn.click()
 
     def click_assist_right_now(self):
