@@ -26,6 +26,7 @@ class Alipay(BabaFarmBasic):
             {'去完成': [
                 '逛15',
                 '浏览15',
+                '连续浏览',
             ]})
         self.button2desc.update(
             {
@@ -38,7 +39,7 @@ class Alipay(BabaFarmBasic):
 
     def get_into_baba_farm(self):
         elem = find_element(self.driver, By.XPATH,
-                            f"//android.widget.TextView[@text='芭芭农场']")[0]
+                            f"//android.widget.TextView[@text='芭芭农场']", wait_time=5)[0]
         loc = elem.location
         self.click_coor(**loc)
 
@@ -70,7 +71,7 @@ class Alipay(BabaFarmBasic):
             time.sleep(1)
 
     def alipay_click_assist_right_now(self):
-        assist_rn = self.find_element('button', '为Ta助力', wait_time=1)[0]
+        assist_rn = self.find_element('button', '为Ta助力', wait_time=2)[0]
         assist_rn.click()
 
     def click_assist_right_now(self):
