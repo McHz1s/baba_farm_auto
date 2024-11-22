@@ -167,7 +167,7 @@ class BabaFarmBasic(object):
                     self.find_element('button', '取消', do_click=True)
                 except:
                     pass
-                self.back_until_elem_found('button', '去完成')
+                self.back_until_elem_found('button', '去完成', wait_time=5)
 
     def browse_guan_hao_huo(self, item_desc, to_complete_text='去完成'):
         to_complet_buttons = self.find_element('button', f'{to_complete_text}')
@@ -197,7 +197,7 @@ class BabaFarmBasic(object):
 
     def back(self):
         try:
-            back_button = self.find_element('Button', '返回')[0]
+            back_button = self.find_element('Button', '返回', wait_time=0.001)[0]
             back_button.click()
         except:
             self.driver.back()
