@@ -2,13 +2,15 @@ import os
 import time
 from functools import partial
 
+
+
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.mobileby import MobileBy
 
 from driver.baba_basic import BabaFarmBasic
 from utils.appium_utils import get_into_app, \
-    build_desired_capabilities
+    build_desired_capabilities, click_elem_by_coor
 
 desired_capabilities = build_desired_capabilities()
 print(desired_capabilities)
@@ -115,6 +117,17 @@ class Taobao(BabaFarmBasic):
         time.sleep(3)
         self.click_gather_fertilizer()
         self.auto_browse()
+
+    def fetch_family_reward(self):
+        elem = self.find_element('button', '立即领取', do_click=True)
+        elem_list = self.find_element('button', '立即领取')
+        for elem in elem_list:
+            try:
+                if elem.location['y'] > 700:
+                    elem.click()
+            except:
+                pass
+        return elem_list
 
     def auto_browse(self):
         func_list = self.browse_func_init()
