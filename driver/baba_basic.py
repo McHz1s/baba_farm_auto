@@ -156,7 +156,7 @@ class BabaFarmBasic(object):
                 if if_search:
                     try:
                         search_button = self.find_element('button', '搜索', do_click=False)[0]
-                        edit_button = self.find_element('edittext', None)[0]
+                        edit_button = self.find_element('edittext', None, wait_time=2)[0]
                         edit_button.send_keys('dd')
                         time.sleep(1)
                         search_button.click()
