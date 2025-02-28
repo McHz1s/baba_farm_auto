@@ -103,8 +103,11 @@ class Taobao(BabaFarmBasic):
     def auto_assist_all_users(self):
         user_name_list = os.environ.get('USER_NAME').split()
         for i, user_name in enumerate(user_name_list):
-            self.to_desktop()
-            self.get_into_app()
+            if i == 0:
+                self.to_desktop()
+                self.get_into_app()
+            else:
+                self.back_until_elem_found('frame', f'消息')
             is_success = self.auto_assist_user(user_name)
             if is_success:
                 valid_user_name = user_name
