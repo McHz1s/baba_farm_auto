@@ -118,6 +118,15 @@ class Taobao(BabaFarmBasic):
         except:
             pass
         time.sleep(3)
+        try:
+            elem = self.find_element('button', '关闭')[0]
+            click_elem_by_coor(elem, self.driver)
+        except:
+            pass
+        try:
+            self.fetch_family_reward()
+        except:
+            pass
         self.click_gather_fertilizer()
         self.auto_browse()
 
