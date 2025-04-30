@@ -111,8 +111,7 @@ class Taobao(BabaFarmBasic):
             is_success = self.auto_assist_user(user_name)
             if is_success:
                 valid_user_name = user_name
-        self.to_desktop()
-        self.get_into_app()
+        self.back_until_elem_found('frame', f'消息')
         try:
             self.auto_assist_user(valid_user_name)
         except:
